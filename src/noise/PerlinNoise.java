@@ -23,6 +23,11 @@ public class PerlinNoise
         }
     }
 
+    /**
+     * 1D noise generator.
+     * @param count - Size of the noise array to generate
+     * @return output - Noise array returned
+     */
     public float[] perlin1DNoise(int count)
     {
         float[] output = new float[count];
@@ -63,6 +68,10 @@ public class PerlinNoise
         octaves = 1;
     }
 
+    /**
+     * Increments octave, smoothing the noise in the process
+     * Resets to first octave if over the max sampling
+     */
     public void incrementOctave()
     {
         octaves++;

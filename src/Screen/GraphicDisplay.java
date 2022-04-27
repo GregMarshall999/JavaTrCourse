@@ -1,7 +1,10 @@
 package Screen;
 
 import javax.swing.JPanel;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 public class GraphicDisplay extends JPanel
 {
@@ -44,6 +47,12 @@ public class GraphicDisplay extends JPanel
         }
     }
 
+    /**
+     * Updates the values array in class
+     * Changes the width of the display to the new array resolution
+     * Updates screen display with new values
+     * @param values - array of new values to update
+     */
     public void updateValues(float[] values)
     {
         this.values = values;

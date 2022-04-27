@@ -24,6 +24,10 @@ public class Frame extends JFrame implements KeyListener
         this.setVisible(true);
     }
 
+    /**
+     * Updates the values array in the graphics display class
+     * @param values - array of new values to update
+     */
     public void updateValues(float[] values)
     {
         gd.updateValues(values);
@@ -37,12 +41,9 @@ public class Frame extends JFrame implements KeyListener
             case 'o':
                 pn.incrementOctave();
                 gd.updateValues(pn.perlin1DNoise(16));
-                gd.repaint();
                 break;
             case 's':
-                pn.newSeedSize(16);
                 gd.updateValues(pn.perlin1DNoise(16));
-                gd.repaint();
                 break;
             default:
                 break;
