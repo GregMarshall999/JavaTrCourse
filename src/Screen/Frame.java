@@ -50,6 +50,9 @@ public class Frame extends JFrame implements KeyListener
                 pn.incrementOctave();
                 gd.updateValues(pn.perlin1DNoise(16));
                 break;
+            case 'm':
+                gd.toggleMode();
+                break;
             case 's':
                 pn.generateSeed();
                 gd.updateValues(pn.perlin1DNoise(16));

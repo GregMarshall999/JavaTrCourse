@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class PerlinNoise
 {
-    private int octaves;
+    private int count, octaves;
     private float bias;
     private float[] seed;
 
@@ -12,6 +12,7 @@ public class PerlinNoise
     {
         seed = new float[seedSize];
         generateSeed();
+        count = 1;
         octaves = 1;
         bias = 2.0f;
     }
@@ -53,11 +54,11 @@ public class PerlinNoise
      */
     public void incrementOctave()
     {
-        octaves++;
-        if(octaves > 5)
-        {
-            octaves = 1;
-        }
+        octaves++;                                      //increment octaves
+        int next8 = count/8;                            //Normalizes size to smallest multiple of 8
+        int maxOctave = (int)Math.sqrt(8*next8) + 1;    //Gets the smallest square of 2 to the count
+        int isOverMax = octaves > maxOctave ? 1 : 0;    //tests if the octave is greater than the maximum
+        octaves = isOverMax + (1-isOverMax)*octaves;  //changes octaves depending on bool condition
     }
 
     /**
@@ -67,6 +68,7 @@ public class PerlinNoise
      */
     public float[] perlin1DNoise(int count)
     {
+        this.count = count;
         float[] output = new float[count];
 
         for(int x = 0; x < count; x++)

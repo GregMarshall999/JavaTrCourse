@@ -1,5 +1,7 @@
 package Screen;
 
+import noise.Mode;
+
 import javax.swing.JPanel;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -13,10 +15,12 @@ public class GraphicDisplay extends JPanel
     private int colWidth;
     private final int[] xp = new int[4] , yp = new int[4];
     private float[] values;
+    private Mode mode;
 
     public GraphicDisplay()
     {
         this.setPreferredSize(new Dimension(500, 500));
+        mode = Mode.MODE1D;
         colWidth = 0;
     }
 
@@ -27,24 +31,49 @@ public class GraphicDisplay extends JPanel
         
         g.setPaint(Color.BLACK);
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
-        g.setPaint(new Color(21, 111, 21));
 
-        for(int x = 0; x < values.length-1; x++)
+        switch (mode)
         {
-            xp[0] = x*colWidth + offset;
-            xp[1] = (x+1)*colWidth + offset;
-            xp[2] = xp[1];
-            xp[3] = xp[0];
+            case MODE1D:
+                g.setPaint(new Color(21, 111, 21));
+                for(int x = 0; x < values.length-1; x++)
+                {
+                    xp[0] = x*colWidth + offset;
+                    xp[1] = (x+1)*colWidth + offset;
+                    xp[2] = xp[1];
+                    xp[3] = xp[0];
 
-            yp[0] = 400;
-            yp[1] = yp[0];
-            temp = values[x+1]*200;
-            yp[2] = 400 - (int)temp;
-            temp = values[x]*200;
-            yp[3] = 400 - (int)temp;
+                    yp[0] = 400;
+                    yp[1] = yp[0];
+                    temp = values[x+1]*200;
+                    yp[2] = 400 - (int)temp;
+                    temp = values[x]*200;
+                    yp[3] = 400 - (int)temp;
 
-            g.fillPolygon(xp, yp, 4);
+                    g.fillPolygon(xp, yp, 4);
+                }
+                break;
+            case MODE2D:
+                break;
+            default:
+                break;
         }
+    }
+
+    public void toggleMode()
+    {
+        switch (mode)
+        {
+            case MODE1D:
+                mode = Mode.MODE2D;
+                break;
+            case MODE2D:
+                mode = Mode.MODE1D;
+                break;
+            default:
+                break;
+        }
+        repaint();
     }
 
     /**
