@@ -5,21 +5,58 @@ import java.util.Random;
 public class PerlinNoise
 {
     private int octaves;
+    private float bias;
     private float[] seed;
 
     public PerlinNoise(int seedSize)
     {
         seed = new float[seedSize];
+        generateSeed();
         octaves = 1;
+        bias = 2.0f;
     }
 
-    private void generateSeed()
+    /**
+     * Generates new seed
+     */
+    public void generateSeed()
     {
         Random r = new Random();
 
         for(int i = 0; i < seed.length; i++)
         {
             seed[i] = r.nextFloat();
+        }
+    }
+
+    /**
+     * Decrements bias by 0.2
+     * Min set to 0.2f!! Division by 0 in perlin1DNoise!!
+     */
+    public void decrementBias()
+    {
+        float f = bias == 0.0f ? 1.0f : 0.0f;
+        bias = f*0.2f + (1.0f-f)*(bias-0.2f);
+    }
+
+    /**
+     * Increments bias by 0.2
+     */
+    public void incrementBias()
+    {
+        bias += 0.2f;
+    }
+
+    /**
+     * Increments octave, smoothing the noise in the process
+     * Resets to first octave if over the max sampling
+     */
+    public void incrementOctave()
+    {
+        octaves++;
+        if(octaves > 5)
+        {
+            octaves = 1;
         }
     }
 
@@ -31,7 +68,6 @@ public class PerlinNoise
     public float[] perlin1DNoise(int count)
     {
         float[] output = new float[count];
-        generateSeed();
 
         for(int x = 0; x < count; x++)
         {
@@ -49,7 +85,7 @@ public class PerlinNoise
                 float sample = (1.0f - blend) * seed[sample1] + blend * seed[sample2];
                 noise += sample * scale;
                 scaleAcc += scale;
-                scale = scale / 2.0f;
+                scale = scale / bias;
             }
 
             output[x] = noise / scaleAcc;
@@ -65,19 +101,5 @@ public class PerlinNoise
     public void newSeedSize(int seedSize)
     {
         seed = new float[seedSize];
-        octaves = 1;
-    }
-
-    /**
-     * Increments octave, smoothing the noise in the process
-     * Resets to first octave if over the max sampling
-     */
-    public void incrementOctave()
-    {
-        octaves++;
-        if(octaves > 5)
-        {
-            octaves = 1;
-        }
     }
 }

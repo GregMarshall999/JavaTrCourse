@@ -38,11 +38,20 @@ public class Frame extends JFrame implements KeyListener
     {
         switch (e.getKeyChar())
         {
+            case 'a':
+                pn.incrementBias();
+                gd.updateValues(pn.perlin1DNoise(16));
+                break;
+            case 'd':
+                pn.decrementBias();
+                gd.updateValues(pn.perlin1DNoise(16));
+                break;
             case 'o':
                 pn.incrementOctave();
                 gd.updateValues(pn.perlin1DNoise(16));
                 break;
             case 's':
+                pn.generateSeed();
                 gd.updateValues(pn.perlin1DNoise(16));
                 break;
             default:
