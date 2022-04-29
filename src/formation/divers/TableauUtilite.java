@@ -1,4 +1,4 @@
-package divers;
+package formation.divers;
 
 import java.util.Scanner;
 

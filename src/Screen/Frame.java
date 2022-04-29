@@ -1,7 +1,5 @@
 package Screen;
 
-import noise.PerlinNoise;
-
 import javax.swing.JFrame;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -9,28 +7,18 @@ import java.awt.event.KeyListener;
 public class Frame extends JFrame implements KeyListener
 {
     private final GraphicDisplay gd;
-    private final PerlinNoise pn;
 
-    public Frame(PerlinNoise pn)
+    public Frame()
     {
+        super();
         gd = new GraphicDisplay();
-        this.pn = pn;
         this.add(gd);
         this.addKeyListener(this);
         this.pack();
-        this.setTitle("Perlin Noise 1D");
+        this.setTitle("Perlin Noise");
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
-    }
-
-    /**
-     * Updates the values array in the graphics display class
-     * @param values - array of new values to update
-     */
-    public void updateValues(float[] values)
-    {
-        gd.updateValues(values);
     }
 
     @Override
@@ -38,24 +26,23 @@ public class Frame extends JFrame implements KeyListener
     {
         switch (e.getKeyChar())
         {
-            case 'a':
-                pn.incrementBias();
-                gd.updateValues(pn.perlin1DNoise(16));
+            case '+':
+                gd.zoomIn();
                 break;
-            case 'd':
-                pn.decrementBias();
-                gd.updateValues(pn.perlin1DNoise(16));
+            case '-':
+                gd.zoomOut();
                 break;
-            case 'o':
-                pn.incrementOctave();
-                gd.updateValues(pn.perlin1DNoise(16));
+            case '2':
+                gd.shiftDown();
                 break;
-            case 'm':
-                gd.toggleMode();
+            case '4':
+                gd.shiftLeft();
                 break;
-            case 's':
-                pn.generateSeed();
-                gd.updateValues(pn.perlin1DNoise(16));
+            case '6':
+                gd.shiftRight();
+                break;
+            case '8':
+                gd.shiftUp();
                 break;
             default:
                 break;

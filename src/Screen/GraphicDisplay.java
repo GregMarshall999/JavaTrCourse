@@ -1,6 +1,6 @@
 package Screen;
 
-import noise.Mode;
+import noise.kenperlin.PerlinNoise;
 
 import javax.swing.JPanel;
 import java.awt.Color;
@@ -10,82 +10,99 @@ import java.awt.Graphics2D;
 
 public class GraphicDisplay extends JPanel
 {
-    private final int offset = 50;
-
-    private int colWidth;
-    private final int[] xp = new int[4] , yp = new int[4];
-    private float[] values;
-    private Mode mode;
+    private final PerlinNoise pn;
+    private final double noiseRange;
+    //private int dimension;
+    private float z, zoom, offsetX, offsetY;
 
     public GraphicDisplay()
     {
-        this.setPreferredSize(new Dimension(500, 500));
-        mode = Mode.MODE1D;
-        colWidth = 0;
+        this.setPreferredSize(new Dimension(800, 800));
+        pn = new PerlinNoise(254);
+        //dimension = 2;
+        noiseRange = 1.0;
+        z = 0.0f;
+        zoom = 1.0f;
+        offsetX = 0.0f;
+        offsetY = 0.0f;
+    }
+
+    public void shiftDown()
+    {
+        offsetY+=.1;
+    }
+
+    public void shiftLeft()
+    {
+        offsetX-=.1;
+    }
+
+    public void shiftRight()
+    {
+        offsetX+=.1;
+    }
+
+    public void shiftUp()
+    {
+        offsetY-=.1;
+    }
+
+    /**
+     * Zoom out noise display
+     */
+    public void zoomOut()
+    {
+        zoom -=1.0f;
+        if(zoom<=0.0f)
+            zoom = 1.0f;
+    }
+
+    /**
+     * Zoom noise display
+     */
+    public void zoomIn()
+    {
+        zoom +=1.0f;
     }
 
     public void paint(Graphics gBase)
     {
-        float temp;
         Graphics2D g = (Graphics2D) gBase;
-        
+        int itX = 0;
+        int itY = 0;
+
         g.setPaint(Color.BLACK);
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
 
-        switch (mode)
-        {
-            case MODE1D:
-                g.setPaint(new Color(21, 111, 21));
-                for(int x = 0; x < values.length-1; x++)
+        for(float y = 0.0f; y < this.getHeight()/ zoom - 1.0f/ zoom; y+=1.0f/ zoom) {
+            for (float x = 0.0f; x < this.getWidth()/ zoom - 1.0f/ zoom; x += 1.0f/ zoom) {
+
+                double noise = pn.noise(x+offsetX, y+offsetY, z);
+                if(noise <= 0.0)
                 {
-                    xp[0] = x*colWidth + offset;
-                    xp[1] = (x+1)*colWidth + offset;
-                    xp[2] = xp[1];
-                    xp[3] = xp[0];
-
-                    yp[0] = 400;
-                    yp[1] = yp[0];
-                    temp = values[x+1]*200;
-                    yp[2] = 400 - (int)temp;
-                    temp = values[x]*200;
-                    yp[3] = 400 - (int)temp;
-
-                    g.fillPolygon(xp, yp, 4);
+                    g.setPaint(new Color(   normalizeNeg(noise, -noiseRange, 0.0, 39),
+                                            normalizeNeg(noise, -noiseRange, 0.0, 47),
+                                            normalizeNeg(noise, -noiseRange, 0.0, 248)));
                 }
-                break;
-            case MODE2D:
-                break;
-            default:
-                break;
+                else
+                {
+                    g.setPaint(new Color(   normalizeNeg(noise, -noiseRange, noiseRange, 90),
+                                            normalizeNeg(noise, -noiseRange, noiseRange, 236),
+                                            normalizeNeg(noise, -noiseRange, noiseRange, 57)));
+                }
+                g.fillRect(itX, itY, 1, 1);
+                itX++;
+            }
+            itX=0;
+            itY++;
         }
-    }
-
-    public void toggleMode()
-    {
-        switch (mode)
-        {
-            case MODE1D:
-                mode = Mode.MODE2D;
-                break;
-            case MODE2D:
-                mode = Mode.MODE1D;
-                break;
-            default:
-                break;
-        }
+        z+=.01f;
         repaint();
     }
 
-    /**
-     * Updates the values array in class
-     * Changes the width of the display to the new array resolution
-     * Updates screen display with new values
-     * @param values - array of new values to update
-     */
-    public void updateValues(float[] values)
+    public static int normalizeNeg(double value, double min, double max, double newMax)
     {
-        this.values = values;
-        colWidth = (getWidth()-2*offset)/values.length;
-        repaint();
+        double d = ((value + Math.abs(min))*newMax)/(max + Math.abs(min));
+        return (int)d;
     }
 }
